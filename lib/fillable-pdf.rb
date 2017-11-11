@@ -8,6 +8,7 @@ class FillablePDF
   BYTE_STREAM = Rjb.import('java.io.ByteArrayOutputStream')
   FILE_READER = Rjb.import('com.itextpdf.text.pdf.PdfReader')
   PDF_STAMPER = Rjb.import('com.itextpdf.text.pdf.PdfStamper')
+  IMAGE = Rjb.import('com.itextpdf.text.Image')
 
   ##
   # Opens a given fillable PDF file and prepares it for modification.
@@ -86,6 +87,16 @@ class FillablePDF
     @acro_fields.setField key.to_s, value.to_s
   end
 
+  def set_push_button_image(key, image_file)
+    field = @acro_fields.getNewPushbuttonFromField(key)
+
+    field.setLayout(2)
+    field.setProportionalIcon(true)
+    field.setImage(IMAGE.getInstance(image_file))
+
+    @acro_fields.replacePushbuttonField key, field.getField
+  end
+
   ##
   # Sets the values of multiple fields given a set of unique field names and values.
   #
@@ -157,6 +168,10 @@ class FillablePDF
   #
   def save_as(file, flatten = false)
     File.open(file, 'wb') { |f| f.write(finalize(flatten)) && f.close }
+  end
+
+  def get_bytes(flatten=false)
+    finalize(flatten)
   end
 
   private

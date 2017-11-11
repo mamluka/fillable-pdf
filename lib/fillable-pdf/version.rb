@@ -1,3 +1,3 @@
-module FillablePDF
+class FillablePDF
   VERSION = '0.5'.freeze
 end
